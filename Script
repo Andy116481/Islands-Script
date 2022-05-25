@@ -1,0 +1,241 @@
+if game:GetService("CoreGui"):FindFirstChild("Islands") then
+    game:GetService("CoreGui").Islands:Destroy()
+end
+
+-- key is Sfm86iT688
+
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/zxciaz/VenyxUI/main/Reuploaded"))() --someone reuploaded it so I put it in place of the original back up so guy can get free credit.
+local venyx = library.new("Islands GUI | By Electron Systems (Beta)", 5013109572)
+
+local islandName
+for i,v in pairs(game.Workspace:GetDescendants()) do
+    if v.Name == "".. game.Players.LocalPlayer.UserId then
+        islandName = v.Parent.Parent
+    end 
+end
+-- themes
+local themes = {
+Background = Color3.fromRGB(24, 24, 24),
+Glow = Color3.fromRGB(0, 0, 0),
+Accent = Color3.fromRGB(10, 10, 10),
+LightContrast = Color3.fromRGB(20, 20, 20),
+DarkContrast = Color3.fromRGB(14, 14, 14),  
+TextColor = Color3.fromRGB(255, 255, 255)
+}
+
+local pageHome = venyx:addPage("Home", 5012544693)
+local page1 = venyx:addPage("Farming", 5012544693)
+local page2 = venyx:addPage("Mobs", 5012544693)
+local section1 = page1:addSection("Crops")
+local section2 = page1:addSection("Ores")
+local sectionWood = page1:addSection("Wood")
+local sectionUpdate = pageHome:addSection("Update Logs")
+local sectionCredits = pageHome:addSection("Credits")
+sectionUpdate:addButton("Brought to you by Electron Systems" , function()
+    warn("Brought to you by Electron Systems")
+end)
+sectionUpdate:addButton("Premium Features Found on our Discord" , function()
+    warn("Premium Features Found on our Discord")
+end)
+sectionCredits:addButton("Developers : Andy & Electron", function()
+    warn("NOTHING HERE")
+end)
+local mobSection = page2:addSection("Mobs")
+mobSection:addButton("MOBS COMING SOON", function()
+    print("why you click this button")
+end)
+-- mobSection:addToggle("Farm Slimes", false, function(value)
+--     getgenv().farmSlime = value
+--     spawn(function()
+--         while getgenv().farmSlime and task.wait(0.01) do
+--             if getgenv().farmSlime == false then return end
+--             for i,v in pairs(game:GetService("Workspace").WildernessIsland.Entities:GetChildren()) do
+--                 if getgenv().farmSlime == false then return end
+--                 if v.Name == "slime" then
+--                     if v.Name == "HuamnoidRootPart" then
+--                         repeat task.wait()
+--                         if getgenv().farmSlime == false then return end
+--                         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v:FindFirstChild("HumanoidRootPart").CFrame + Vector3.new(0,-10,0)
+--                         local args = {[1] = {["hitUnit"] = workspace.WildernessIsland.Entities.slime}}
+--                         game:GetService("ReplicatedStorage").rbxts_include.node_modules.net.out._NetManaged.CLIENT_SWING_SWORD:InvokeServer(unpack(args))
+--                         until v.Parent == nil or getgenv().farmSlime == false
+--                     end
+--                 end
+--             end
+--         end
+--     end)
+-- end)
+
+-- section1:addToggle("Farm Wheat",false, function(value)
+--     getgenv().FarmWheat = value
+--     spawn(function()
+--         while task.wait(0.01) do
+--             local wheat = game.Workspace.Islands:FindFirstChildOfClass("Model").Blocks:FindFirstChild("wheat")
+--             if wheat then
+--                 game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = wheat.CFrame + Vector3.new(0,3,0)
+--                 local args = {
+--                     [1] = {
+--                         ["player"] = game:GetService("Players").LocalPlayer,
+--                         ["player_tracking_category"] = "join_from_web",
+--                         ["model"] = wheat
+--                     }
+--                 }
+
+--                 game:GetService("ReplicatedStorage").rbxts_include.node_modules.net.out._NetManaged.CLIENT_HARVEST_CROP_REQUEST:InvokeServer(unpack(args))
+--             end
+--         end
+--     end)
+-- end)
+local SelectedOre
+section2:addDropdown("Ore Farm", {"rockStone", "rockIron","rockCoal"}, function(v)
+    SelectedOre = v
+end)
+
+local FarmingOres = false
+section2:addToggle("Mine Ores",false, function(value)
+    FarmingOres = value
+    spawn(function()
+        while FarmingOres and task.wait(0.05) do
+            if FarmingOres == false then return end
+            local rocks = game:GetService("Workspace").WildernessBlocks[SelectedOre]
+            repeat task.wait()
+            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = rocks.CFrame + Vector3.new(0,3,0)
+            local args = {[1] = {["block"] = rocks,}}
+			game:GetService("ReplicatedStorage").rbxts_include.node_modules.net.out._NetManaged.CLIENT_BLOCK_HIT_REQUEST:InvokeServer(unpack(args))
+            until FarmingOres == false or rocks.Parent == nil
+        end
+    end)
+end)
+
+
+
+local Crops = {}
+local Module = require(game:GetService("ReplicatedStorage").TS.tool["tool-meta"])
+for i,v in pairs(Module.ToolMeta) do
+    if string.find(i, "Seeds") and not string.find(i, "Flower") then
+        local TempThing = string.gsub(i, "Seeds", "")
+        Crops[TempThing] = TempThing
+    end
+end
+local SelectedCrop
+section1:addDropdown("Crop Farm", Crops, function(v)
+    SelectedCrop = v
+end)
+
+local FarmingCrops = false
+section1:addToggle("Crop Farm", false, function(bool)
+    FarmingCrops = bool
+    while FarmingCrops and task.wait() do
+        for i,v in pairs(islandName.Blocks:GetChildren()) do 
+            if FarmingCrops and v.Name == SelectedCrop then
+                if ( v.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position ).Magnitude > 23 then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame + Vector3.new(0,3,0)
+                end
+                local ohTable1 = {
+                	["player"] = game:GetService("Players").LocalPlayer,
+                	["player_tracking_category"] = "join_from_web",
+                	["model"] = v
+                }
+                StoredCFrame = v.CFrame
+                game:GetService("ReplicatedStorage").rbxts_include.node_modules.net.out._NetManaged.CLIENT_HARVEST_CROP_REQUEST:InvokeServer(ohTable1)
+                task.wait()
+                local ohTable1 = {
+                	["upperBlock"] = false,
+                	["cframe"] = StoredCFrame,
+                	["player_tracking_category"] = "join_from_web",
+                	["blockType"] = SelectedCrop
+                }
+                game:GetService("ReplicatedStorage").rbxts_include.node_modules.net.out._NetManaged.CLIENT_BLOCK_PLACE_REQUEST:InvokeServer(ohTable1)
+                task.wait()
+            end
+        end
+    end
+end)
+
+-- section2:addToggle("Mine Iron",false, function(value)
+--     getgenv().farm = value
+--     spawn(function()
+--         while getgenv().farm and task.wait(0.05) do
+--             if getgenv().farm == false then return end
+--             local rock = game:GetService("Workspace").WildernessBlocks.rockIron
+--             repeat task.wait()
+--             game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = rock.CFrame + Vector3.new(0,3,0)
+--             local args = {[1] = {["block"] = rock,}}
+-- 			game:GetService("ReplicatedStorage").rbxts_include.node_modules.net.out._NetManaged.CLIENT_BLOCK_HIT_REQUEST:InvokeServer(unpack(args))
+--             until getgenv().farm == false or v == nil
+--         end
+--     end)
+-- end)
+
+-- section2:addToggle("Mine Stone",false, function(value)
+--     getgenv().farmStone = value
+--     spawn(function()
+--         while getgenv().farmStone and task.wait(0.05) do
+--             if getgenv().farmStone == false then return end
+--             local rock = game:GetService("Workspace").WildernessBlocks.rockStone
+--             repeat task.wait(0.05)
+--             if getgenv().farmStone == false then return end
+--             game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = rock.CFrame + Vector3.new(0,3,0)
+--             local args = {[1] = {["block"] = rock,}}
+-- 			game:GetService("ReplicatedStorage").rbxts_include.node_modules.net.out._NetManaged.CLIENT_BLOCK_HIT_REQUEST:InvokeServer(unpack(args))
+--             until rock.Parent == nil or getgenv().farmStone == false
+--         end
+--     end)
+-- end)
+
+-- section2:addToggle("Mine Coal",false, function(value)
+--     getgenv().farm2 = value
+--     spawn(function()
+--         while getgenv().farm2 and task.wait(0.05) do
+--             if getgenv().farm2 == false then return end
+--             local rock = game:GetService("Workspace").WildernessBlocks.rockCoal
+--             repeat task.wait()
+--             game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = rock.CFrame + Vector3.new(0,3,0)
+--             local args = {[1] = {["block"] = rock,}}
+-- 			game:GetService("ReplicatedStorage").rbxts_include.node_modules.net.out._NetManaged.CLIENT_BLOCK_HIT_REQUEST:InvokeServer(unpack(args))
+--             until getgenv().farm == false or rock.Parent == nil
+--         end
+--     end)
+-- end)
+
+
+
+section2:addKeybind("Toggle Keybind", Enum.KeyCode.RightShift, function()
+    print("Activated Keybind")
+    venyx:toggle()
+    end, function()
+    print("Changed Keybind")
+end)
+-- load
+venyx:SelectPage(venyx.pages[1], true) -- no default for more freedom
+
+local theme = venyx:addPage("Theme", 5012544693)
+local colors = theme:addSection("Colors")
+
+for theme, color in pairs(themes) do -- all in one theme changer, i know, im cool
+colors:addColorPicker(theme, color, function(color3)
+venyx:setTheme(theme, color3)
+end)
+end
+local SelectedTree
+sectionWood:addDropdown("Wood Farm", {"Oak"}, function(v)
+    SelectedTree = v
+end)
+local FarmTree = false
+sectionWood:addToggle("Wood Farm All",false, function(value)
+    FarmTree = value
+    spawn(function()
+        for i,v in pairs(islandName.Blocks:GetChildren()) do
+            wait(1)
+            if FarmTree == false then return end
+            if v.Name:find("tree") then
+                repeat wait(0.25)
+                if FarmTree == false then return end
+                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame + Vector3.new(0,3,0)
+                local args = {[1] = {["block"] = v}}
+                game:GetService("ReplicatedStorage").rbxts_include.node_modules.net.out._NetManaged.CLIENT_BLOCK_HIT_REQUEST:InvokeServer(unpack(args))
+                until v.Parent == nil
+            end 
+        end
+    end)
+end)
